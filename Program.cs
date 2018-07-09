@@ -18,12 +18,9 @@ namespace WorldCup
         static readonly string _testDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "test_augmented.csv");
         static readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "Model.zip");
 
-        static readonly double EnglandGoals = 2.0;
-        static readonly double SwedenGoals = 0.0;
-
         static readonly List<int> numLeavesList = new List<int>() { 2, 5, 10, 20 };
-        static readonly List<double> learningRatesList = new List<double>() { 1e-5, 1e-4, 1e-3, 1e-2, 1e-1 };
-        static readonly List<int> maxBinsList = new List<int>() { 2, 5, 10, 20 };
+        static readonly List<double> learningRatesList = new List<double>() { 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e1 };
+        static readonly List<int> maxBinsList = new List<int>() { 2, 5, 10, 20, 30, 40 };
 
         static async Task Main(string[] args)
         {
