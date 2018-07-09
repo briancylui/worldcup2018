@@ -39,7 +39,7 @@ namespace WorldCup
 
                         if (loss < best_loss)
                         {
-                            Console.WriteLine($"Best model so far is: NumLeaves = {numLeaves}, LearningRates = {learningRates}, MaxBins = {maxBins}, with loss {loss}");
+                            Console.WriteLine($"Best model so far is: NumLeaves = {numLeaves}, LearningRates = {learningRates}, MaxBins = {maxBins}, with loss (RMS) {loss}");
                             Console.WriteLine($"-- Predicted result is: England VS Sweden = {predictionForEngland.HomeTeamGoals} : {predictionForSweden.HomeTeamGoals}");
                             best_loss = loss;
                         }
