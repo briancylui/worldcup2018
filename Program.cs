@@ -46,9 +46,14 @@ namespace WorldCup
                     "HomeTeam",
                     "AwayTeam",
                     "Attendance",
-                    "Referee"),
-                new FastTreeRegressor()
+                    "Referee")
             };
+
+            FastTreeRegressor tree = new FastTreeRegressor();
+            tree.NumLeaves = 10;
+            tree.LearningRates = 10;
+            tree.MaxBins = 10;
+            pipeline.Add(tree);
 
             PredictionModel<WorldCupData, WorldCupPrediction> model = pipeline.Train<WorldCupData, WorldCupPrediction>();
 
