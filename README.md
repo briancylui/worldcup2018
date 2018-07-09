@@ -4,8 +4,8 @@ Goal: Predict the numbers of goals for England and Sweden in their upcoming game
 
 Program output:
 ``` ini
-RMS = 1.03356290605075
-RSquared = -0.143797009975711
-Predicted number of goals for England: 0.354651
-Predicted number of goals for Sweden: 1.170173
+RMS = 1.29679007132815
+RSquared = -0.0500067219882872
+Predicted number of goals for England: 1.102681
+Predicted number of goals for Sweden: 1.346095
 ```
