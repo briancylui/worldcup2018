@@ -32,7 +32,8 @@ namespace WorldCup
                 {
                     foreach (int maxBins in maxBinsList)
                     {
-                        var model = await Train(numLeaves, learningRates, maxBins);
+                        Dictionary<string, object> kwargs = new Dictionary<string, object>() { { "numLeaves", numLeaves }, { "learningRates", learningRates }, { "maxBins", maxBins } };
+                        var model = await Train("FastTreeRegressor", kwargs);
                         double loss = Evaluate(model);
                         WorldCupPrediction predictionForEngland = model.Predict(TestData.TestEngland);
                         WorldCupPrediction predictionForSweden = model.Predict(TestData.TestSweden);
@@ -48,9 +49,11 @@ namespace WorldCup
             }
 
 
+
+
         }
 
-        public static async Task<PredictionModel<WorldCupData, WorldCupPrediction>> Train(int numLeaves, double learningRates, int maxBins)
+        public static async Task<PredictionModel<WorldCupData, WorldCupPrediction>> Train(string type, Dictionary<string, object> kwargs = null)
         {
             var pipeline = new LearningPipeline()
             {
@@ -69,9 +72,13 @@ namespace WorldCup
                     "AwayTeam",
                     "Attendance",
                     "Referee"),
-                new FastTreeRegressor() { NumLeaves = numLeaves, LearningRates = learningRates, MaxBins = maxBins }
             };
 
+            if (type == "FastTreeRegressor")
+            {
+                pipeline.Add(new FastTreeRegressor() { NumLeaves = (int)kwargs["numLeaves"], LearningRates = (double)kwargs["learningRates"], MaxBins = (int)kwargs["maxBins"] });
+            }
+            
             PredictionModel<WorldCupData, WorldCupPrediction> model = pipeline.Train<WorldCupData, WorldCupPrediction>();
 
             await model.WriteAsync(_modelPath);
