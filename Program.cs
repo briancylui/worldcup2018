@@ -14,8 +14,8 @@ namespace WorldCup
 {
     class Program
     {
-        static readonly string _dataPath = Path.Combine(Environment.CurrentDirectory, "Data", "train.csv");
-        static readonly string _testDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "test.csv");
+        static readonly string _dataPath = Path.Combine(Environment.CurrentDirectory, "Data", "train_augmented.csv");
+        static readonly string _testDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "test_augmented.csv");
         static readonly string _modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "Model.zip");
 
         static async Task Main(string[] args)
