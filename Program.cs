@@ -90,7 +90,7 @@ namespace WorldCup
 
                         if (loss < bestLoss)
                         {
-                            Console.WriteLine($"Best model so far is: NumLeaves = {numLeaves}, LearningRates = {learningRates}, MaxBins = {maxBins}, with loss (RMS) {loss}");
+                            Console.WriteLine($"Best fast tree regressor so far is: NumLeaves = {numLeaves}, LearningRates = {learningRates}, MaxBins = {maxBins}, with loss (RMS) {loss}");
                             Console.WriteLine($"-- Predicted result is: England VS Sweden = {predictionForEngland.HomeTeamGoals} : {predictionForSweden.HomeTeamGoals}");
                             bestLoss = loss;
                             bestVersion["type"] = "FastTreeRegressor";
@@ -127,7 +127,7 @@ namespace WorldCup
 
                         if (loss < bestLoss)
                         {
-                            Console.WriteLine($"Best model so far is: BiasLearningRate = {biasLearningRate}, L1Threshold = {l1Threshold}, L2Const = {l2Const}, with loss (RMS) {loss}");
+                            Console.WriteLine($"Best stochastic dual coordinate ascent regressor so far is: BiasLearningRate = {biasLearningRate}, L1Threshold = {l1Threshold}, L2Const = {l2Const}, with loss (RMS) {loss}");
                             Console.WriteLine($"-- Predicted result is: England VS Sweden = {predictionForEngland.HomeTeamGoals} : {predictionForSweden.HomeTeamGoals}");
                             bestLoss = loss;
                             bestVersion["type"] = "StochasticDualCoordinateAscentRegressor";
