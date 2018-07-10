@@ -22,11 +22,17 @@ namespace WorldCup
         static readonly List<double> learningRatesList = new List<double>() { 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1, 1e1 };
         static readonly List<int> maxBinsList = new List<int>() { 2, 5, 10, 20, 30, 40 };
 
+        static readonly List<float> biasLearningRateList = new List<float>() { 1e-5f, 1e-4f, 1e-3f, 1e-2f, 1e-1f, 1f, 1e1f };
+        static readonly List<float> l1ThresholdList = new List<float>() { 1e-5f, 1e-4f, 1e-3f, 1e-2f, 1e-1f, 1f, 1e1f, 1e2f, 1e3f };
+        static readonly List<float> l2ConstList = new List<float>() { 1e-5f, 1e-4f, 1e-3f, 1e-2f, 1e-1f, 1f, 1e1f, 1e2f, 1e3f };
+
         static async Task Main(string[] args)
         {
             List<Dictionary<string, object>> models = new List<Dictionary<string, object>>();
             Dictionary<string, object> bestFastTreeRegressor = await chooseBestFastTreeRegressor();
             models.Add(bestFastTreeRegressor);
+            Dictionary<string, object> bestStochasticDualCoordinateAscentRegressor = await chooseBestStochasticDualCoordinateAscentRegressor();
+            models.Add(bestStochasticDualCoordinateAscentRegressor);
 
             double min_loss = Double.MaxValue;
             List<int> bestModelIndices = new List<int>();
@@ -102,6 +108,43 @@ namespace WorldCup
             return bestVersion;
         }
 
+        public static async Task<Dictionary<string, object>> chooseBestStochasticDualCoordinateAscentRegressor()
+        {
+            double bestLoss = Double.MaxValue;
+            Dictionary<string, object> bestVersion = new Dictionary<string, object>();
+
+            foreach (float biasLearningRate in biasLearningRateList)
+            {
+                foreach (float l1Threshold in l1ThresholdList)
+                {
+                    foreach (float l2Const in l2ConstList)
+                    {
+                        Dictionary<string, object> kwargs = new Dictionary<string, object>() { { "biasLearningRate", biasLearningRate }, { "l1Threshold", l1Threshold }, { "l2Const", l2Const } };
+                        var model = await Train("StochasticDualCoordinateAscentRegressor", kwargs);
+                        double loss = Evaluate(model);
+                        WorldCupPrediction predictionForEngland = model.Predict(TestData.TestEngland);
+                        WorldCupPrediction predictionForSweden = model.Predict(TestData.TestSweden);
+
+                        if (loss < bestLoss)
+                        {
+                            Console.WriteLine($"Best model so far is: BiasLearningRate = {biasLearningRate}, L1Threshold = {l1Threshold}, L2Const = {l2Const}, with loss (RMS) {loss}");
+                            Console.WriteLine($"-- Predicted result is: England VS Sweden = {predictionForEngland.HomeTeamGoals} : {predictionForSweden.HomeTeamGoals}");
+                            bestLoss = loss;
+                            bestVersion["type"] = "StochasticDualCoordinateAscentRegressor";
+                            bestVersion["biasLearningRate"] = biasLearningRate;
+                            bestVersion["l1Threshold"] = l1Threshold;
+                            bestVersion["l2Const"] = l2Const;
+                            bestVersion["England"] = predictionForEngland.HomeTeamGoals;
+                            bestVersion["Sweden"] = predictionForSweden.HomeTeamGoals;
+                            bestVersion["loss"] = loss;
+                        }
+                    }
+                }
+            }
+
+            return bestVersion;
+        }
+
         public static async Task<PredictionModel<WorldCupData, WorldCupPrediction>> Train(string type, Dictionary<string, object> kwargs = null)
         {
             var pipeline = new LearningPipeline()
@@ -126,6 +169,10 @@ namespace WorldCup
             if (type == "FastTreeRegressor")
             {
                 pipeline.Add(new FastTreeRegressor() { NumLeaves = (int)kwargs["numLeaves"], LearningRates = (double)kwargs["learningRates"], MaxBins = (int)kwargs["maxBins"] });
+            }
+            else if (type == "StochasticDualCoordinateAscentRegressor")
+            {
+                pipeline.Add(new StochasticDualCoordinateAscentRegressor() { BiasLearningRate = (float)kwargs["biasLearningRate"], L1Threshold = (float)kwargs["l1Threshold"], L2Const = (float)kwargs["l2Const"] });
             }
             
             PredictionModel<WorldCupData, WorldCupPrediction> model = pipeline.Train<WorldCupData, WorldCupPrediction>();
