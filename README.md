@@ -2,7 +2,8 @@
 
 Goal: Predict the numbers of goals for England and Sweden in their upcoming game this Saturday in World Cup 2018 (Quarter-finals) using ML.NET.
 
-Most recent program output for choosing the best model:
+Most recent program output for choosing the best model
+(between FastTreeRegressor and StochasticDualCoordinateAscentRegressor):
 ``` ini
 The best models are:
 FastTreeRegressor
